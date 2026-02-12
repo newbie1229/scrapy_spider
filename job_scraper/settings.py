@@ -52,7 +52,7 @@ ADDONS = {}
 
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Concurrency and throttling settings
 CONCURRENT_REQUESTS = 8
@@ -62,7 +62,7 @@ RANDOMIZED_DOWNLOAD_DELAY=True
 CLOSESPIDER_TIMEOUT = 21600
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -91,7 +91,7 @@ SCRAPEOPS_API_KEY = "c6a0f619-71ab-44c0-922c-75c02a562848"
 SCRAPEOPS_PROXY_ENABLED = True
 SCRAPEOPS_PROXY_SETTINGS = {
     'country': 'vn', # location of the site to be scraped
-    'residential': True,
+    # 'residential': True,
 }
 
 # Enable or disable downloader middlewares
@@ -101,7 +101,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
     'scrapeops_scrapy.middleware.retry.RetryMiddleware': 550,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-    'scrapeops_scrapy.middleware.proxy.ScrapeOpsProxyMiddleware': 725,
+    # 'scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk': 725,
     # 'scrapy_deltafetch.DeltaFetch': 100,
 }
 DELTAFETCH_ENABLED = False

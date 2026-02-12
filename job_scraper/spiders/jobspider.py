@@ -4,11 +4,13 @@ from datetime import datetime
 import hashlib
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 from job_scraper.items import JobItem
+from urllib.parse import quote
 
 class JobspiderSpider(scrapy.Spider):
     name = "jobspider"
-    allowed_domains = ["www.topcv.vn"] # chặn spider đi crawl các websites khác
+    allowed_domains = ["www.topcv.vn", 'ltuquanghuy1101.workers.dev'] # chặn spider đi crawl các websites khác
     start_urls = ["https://www.topcv.vn/tim-viec-lam-moi-nhat"]
+    proxy_url = "https://scrapy.ltuquanghuy1101.workers.dev/"
 
     custom_settings = {
         'DOWNLOAD_DELAY': 10,
@@ -17,17 +19,21 @@ class JobspiderSpider(scrapy.Spider):
         'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
         
         'RETRY_TIMES': 5, # Tăng số lần thử lại
-        'RETRY_HTTP_CODES': [429, 500, 502, 503, 504], # Bắt lỗi 429 để thử lại
+        'RETRY_HTTP_CODES': [429, 500, 502, 503, 504, 403, 404], # Bắt lỗi 429 để thử lại
         
         'AUTOTHROTTLE_ENABLED': True,
         'AUTOTHROTTLE_START_DELAY': 5,
         'AUTOTHROTTLE_MAX_DELAY': 60,
         'AUTOTHROTTLE_TARGET_CONCURRENCY': 1.0,
 
-        # 'FEEDS' : {
-        #     f'jobdata_topcv{timestamp}.json':{'format':'json'}
-        # }
     }
+
+    def start_requests(self):
+        target_url="https://www.topcv.vn/tim-viec-lam-moi-nhat"
+        final_url=f"{self.proxy_url}?url={quote(target_url)}"
+        yield scrapy.Request(url=final_url, callback=self.parse)
+
+
     # fetch(start_url)
     def parse(self, response): # hàm này được gọi mỗi khi Request được trả về
         jobs = response.css("div.job-item-search-result") 
