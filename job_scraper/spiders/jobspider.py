@@ -38,6 +38,11 @@ class JobspiderSpider(scrapy.Spider):
     def parse(self, response): # hàm này được gọi mỗi khi Request được trả về
         jobs = response.css("div.job-item-search-result") 
         # lấy list các selector object (job) ở trang ngoài chứ ko phải đi vào trong từng job
+        self.logger.info(f"Response Headers: {response.headers}")
+        if response.status == 403:
+        # Lưu nội dung trang 403 ra file để xem nó hiện gì (có phải Captcha không)
+            with open("error_403.html", "wb") as f:
+                f.write(response.body)
         for job in jobs:
             job_url = job.css("h3.title a::attr('href')").get()
             # đi vào từng job
