@@ -87,7 +87,7 @@ SPIDER_MIDDLEWARES = {
 }
 
 # Add Your ScrapeOps API key
-SCRAPEOPS_API_KEY = os.getenv('SCRAPEOPS_API_KEY')
+SCRAPEOPS_API_KEY = "c6a0f619-71ab-44c0-922c-75c02a562848"
 
 
 # Enable or disable downloader middlewares
