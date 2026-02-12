@@ -86,11 +86,17 @@ SPIDER_MIDDLEWARES = {
    "job_scraper.middlewares.JobScraperSpiderMiddleware": 543,
 }
 
+# Add Your ScrapeOps API key
+SCRAPEOPS_API_KEY = os.getenv('SCRAPEOPS_API_KEY')
+
+
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+    'scrapeops_scrapy.middleware.retry.RetryMiddleware': 550,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
     # 'scrapy_deltafetch.DeltaFetch': 100,
 }
 DELTAFETCH_ENABLED = False
@@ -98,16 +104,16 @@ DELTAFETCH_ENABLED = False
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
+EXTENSIONS = {
 #    "scrapy.extensions.telnet.TelnetConsole": None,
-#}
+    'scrapeops_scrapy.extension.ScrapeOpsMonitor': 500, 
+}
 
 # LOG_FILE = f'log{timestamp}.log'
 # LOG_LEVEL = 'INFO'
 
 # nếu môi trường ko phải AWS thì mới xuất log ra local, ko thì xuất ra log
 # của AWS
-import os
 if not os.environ.get("AWS_EXECUTION_ENV"):
     LOG_FILE=f"log{timestamp}.log"
 LOG_LEVEL="INFO"
