@@ -9,8 +9,9 @@ from urllib.parse import quote
 class JobspiderSpider(scrapy.Spider):
     name = "jobspider"
     allowed_domains = ["www.topcv.vn", 'ltuquanghuy1101.workers.dev'] # chặn spider đi crawl các websites khác
-    start_urls = ["https://www.topcv.vn/tim-viec-lam-moi-nhat"]
-    proxy_url = "https://scrapy.ltuquanghuy1101.workers.dev/"
+    # start_urls = ["https://www.topcv.vn/tim-viec-lam-moi-nhat"]
+    start_urls = ["https://scrapy.ltuquanghuy1101.workers.dev/?url=https://www.topcv.vn/tim-viec-lam-moi-nhat"]
+    proxy_url = "https://scrapy.ltuquanghuy1101.workers.dev"
 
     custom_settings = {
         'DOWNLOAD_DELAY': 10,
@@ -38,16 +39,20 @@ class JobspiderSpider(scrapy.Spider):
     def parse(self, response): # hàm này được gọi mỗi khi Request được trả về
         jobs = response.css("div.job-item-search-result") 
         # lấy list các selector object (job) ở trang ngoài chứ ko phải đi vào trong từng job
-        self.logger.info(f"Response Headers: {response.headers}")
-        if response.status == 403:
-            self.logger.error("DÃ BỊ CHẶN 403! NỘI DUNG TRANG LỖI:")
-            self.logger.error(response.text[:5000])
+        # self.logger.info(f"Response Headers: {response.headers}")
+        # if response.status == 403:
+        #     self.logger.error("DÃ BỊ CHẶN 403! NỘI DUNG TRANG LỖI:")
+        #     self.logger.error(response.text[:5000])
         for job in jobs:
             job_url = job.css("h3.title a::attr('href')").get()
-            # đi vào từng job
-            yield response.follow(job_url, callback=self.parse_job_page)
+            if job_url:
+                job_url_via_worker = f"https://scrapy.ltuquanghuy1101.workers.dev/?url={quote(job_url)}"
+                # đi vào từng job
+                yield scrapy.Request(job_url_via_worker, callback=self.parse_job_page)
         next_page_url = response.css('ul.pagination li a[rel="next"]::attr(data-href)').get()
-        yield response.follow(next_page_url, callback=self.parse)
+        if next_page_url:
+            next_page_via_worker = f"https://scrapy.ltuquanghuy1101.workers.dev/?url={quote(next_page_url)}"
+            yield scrapy.Request(next_page_via_worker, callback=self.parse, dont_filter=True)
 
 
     # fecth(job_url)

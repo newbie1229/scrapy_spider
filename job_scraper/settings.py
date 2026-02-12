@@ -125,7 +125,7 @@ LOG_LEVEL="INFO"
 LOG_ENABLED=True
 LOG_STDOUT= True # xuất log trên ECS
 
-JOBDIR = 'crawls/topcv_job_state'
+# JOBDIR = 'crawls/topcv_job_state'
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
