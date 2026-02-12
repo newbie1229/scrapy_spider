@@ -88,7 +88,11 @@ SPIDER_MIDDLEWARES = {
 
 # Add Your ScrapeOps API key
 SCRAPEOPS_API_KEY = "c6a0f619-71ab-44c0-922c-75c02a562848"
-
+SCRAPEOPS_PROXY_ENABLED = True
+SCRAPEOPS_PROXY_SETTINGS = {
+    'country': 'vn', # location of the site to be scraped
+    'residential': True,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -97,6 +101,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
     'scrapeops_scrapy.middleware.retry.RetryMiddleware': 550,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'scrapeops_scrapy.middleware.proxy.ScrapeOpsProxyMiddleware': 725,
     # 'scrapy_deltafetch.DeltaFetch': 100,
 }
 DELTAFETCH_ENABLED = False
