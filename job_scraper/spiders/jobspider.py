@@ -29,10 +29,10 @@ class JobspiderSpider(scrapy.Spider):
 
     }
 
-    def start_requests(self):
-        target_url="https://www.topcv.vn/tim-viec-lam-moi-nhat"
-        final_url=f"{self.proxy_url}?url={quote(target_url)}"
-        yield scrapy.Request(url=final_url, callback=self.parse)
+    # def start_requests(self):
+    #     target_url="https://www.topcv.vn/tim-viec-lam-moi-nhat"
+    #     final_url=f"{self.proxy_url}?url={quote(target_url)}"
+    #     yield scrapy.Request(url=final_url, callback=self.parse)
 
 
     # fetch(start_url)
