@@ -9,8 +9,8 @@ from urllib.parse import quote
 class JobspiderSpider(scrapy.Spider):
     name = "jobspider"
     allowed_domains = ["www.topcv.vn", 'ltuquanghuy1101.workers.dev'] # chặn spider đi crawl các websites khác
-    # start_urls = ["https://www.topcv.vn/tim-viec-lam-moi-nhat"]
-    start_urls = ["https://scrapy.ltuquanghuy1101.workers.dev/?url=https://www.topcv.vn/tim-viec-lam-moi-nhat"]
+    start_urls = ["https://www.topcv.vn/tim-viec-lam-moi-nhat"]
+    # start_urls = ["https://scrapy.ltuquanghuy1101.workers.dev/?url=https://www.topcv.vn/tim-viec-lam-moi-nhat"]
     proxy_url = "https://scrapy.ltuquanghuy1101.workers.dev"
 
     custom_settings = {
@@ -23,16 +23,16 @@ class JobspiderSpider(scrapy.Spider):
         'RETRY_HTTP_CODES': [429, 500, 502, 503, 504, 403, 404], # Bắt lỗi 429 để thử lại
         
         'AUTOTHROTTLE_ENABLED': True,
-        'AUTOTHROTTLE_START_DELAY': 5,
-        'AUTOTHROTTLE_MAX_DELAY': 60,
+        'AUTOTHROTTLE_START_DELAY': 3,
+        'AUTOTHROTTLE_MAX_DELAY': 15,
         'AUTOTHROTTLE_TARGET_CONCURRENCY': 1.0,
 
     }
 
-    # def start_requests(self):
-    #     target_url="https://www.topcv.vn/tim-viec-lam-moi-nhat"
-    #     final_url=f"{self.proxy_url}?url={quote(target_url)}"
-    #     yield scrapy.Request(url=final_url, callback=self.parse)
+    def start_requests(self):
+        target_url="https://www.topcv.vn/tim-viec-lam-moi-nhat"
+        final_url=f"{self.proxy_url}?url={quote(target_url)}"
+        yield scrapy.Request(url=final_url, callback=self.parse, meta={"impersonate": "chrome110"})
 
 
     # fetch(start_url)
@@ -52,7 +52,7 @@ class JobspiderSpider(scrapy.Spider):
         next_page_url = response.css('ul.pagination li a[rel="next"]::attr(data-href)').get()
         if next_page_url:
             next_page_via_worker = f"https://scrapy.ltuquanghuy1101.workers.dev/?url={quote(next_page_url)}"
-            yield scrapy.Request(next_page_via_worker, callback=self.parse, dont_filter=True)
+            yield scrapy.Request(next_page_via_worker, callback=self.parse, dont_filter=True,meta={"impersonate": "chrome110"})
 
 
     # fecth(job_url)
